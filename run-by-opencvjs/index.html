@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+
+<body>
+  <h1>By OpenCV.js</h1>
+  <video id="video"></video>
+  <canvas id="canvas" width="640" height="480"></canvas>
+  <script>
+const init = async () => {
+  const video = document.getElementById("video");
+  video.width = 640;
+  video.height = 480;
+  const stream = await navigator.mediaDevices.getUserMedia({
+    audio: false,
+    video: {
+      width: { ideal: video.width },
+      height: { ideal: video.height },
+    },
+  });
+  video.srcObject = stream;
+  video.play();
+
+  const videoCanvas = document.getElementById("canvas");
+  videoCanvas.width = video.width;
+  videoCanvas.height = video.height;
+  const context = videoCanvas.getContext("2d");
+  const cap = new cv.VideoCapture(video);
+  let cnt = 0;
+  const loopNum = 200;
+  let sumTime = 0.0;
+
+  const updateCanvas = () => {
+    const start1 = performance.now();
+    const srcMat = new cv.Mat(video.height, video.width, cv.CV_8UC4);
+    const rgbMat = new cv.Mat();
+    const rgbOutMat = new cv.Mat();
+    const outMat = new cv.Mat();
+    cap.read(srcMat);
+    cv.cvtColor(srcMat, rgbMat, cv.COLOR_RGBA2RGB);
+    rgbMat.convertTo(rgbOutMat, -1, 1, cnt - 100);
+    cv.cvtColor(rgbOutMat, outMat, cv.COLOR_RGB2RGBA);
+    cv.imshow("canvas", outMat);
+    srcMat.delete();
+    rgbMat.delete();
+    rgbOutMat.delete();
+    outMat.delete();
+    const end1 = performance.now();
+    cnt++;
+    sumTime += end1 - start1;
+    if(cnt == loopNum) {
+      console.log(`doOpenCvTask+Memory: ${sumTime / 100} msec (${loopNum} times avg)`);
+      sumTime = 0;
+      cnt = 0;
+    }
+
+    requestAnimationFrame(updateCanvas);
+  };
+  updateCanvas();
+};
+
+  </script>
+  <script async src="opencv.js" onload="init();"></script>
+</body>
+
+</html>

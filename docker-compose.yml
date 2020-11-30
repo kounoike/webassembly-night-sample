@@ -1,0 +1,15 @@
+version: "3"
+services:
+  full-wasm:
+    build: run-by-full-wasm
+    ports:
+      - "8001:8001"
+  opencv-wasm:
+    build: run-by-opencv-wasm
+    ports:
+      - "8002:8002"
+  opencv-js:
+    build: run-by-opencvjs
+    ports:
+      - "8003:8003"
+    
