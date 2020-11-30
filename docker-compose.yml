@@ -12,4 +12,8 @@ services:
     build: run-by-opencvjs
     ports:
       - "8003:8003"
+  facedetect:
+    build: facedetect-full-wasm
+    ports:
+      - "8004:8004"
     

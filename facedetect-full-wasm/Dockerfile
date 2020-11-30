@@ -26,4 +26,4 @@ WORKDIR /app
 COPY assets/ ./assets
 COPY index.html ./
 
-CMD ["python3", "-m", "http.server", "8000"]
+CMD ["python3", "-m", "http.server", "8004"]
